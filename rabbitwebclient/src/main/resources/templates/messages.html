@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<title>Message List - Spring Boot Web Application Example</title>
+</head>
+<body>
+    <h1 align="center">My Message List</h1>
+    <br/>
+    <table border="1" cellpadding="10">
+        <thead>
+            <tr>
+                <th>Content</th>
+                <th>Send</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="message : ${messages}">
+                <td th:text="${message.content}">Name</td>
+                <td><a th:href="@{/messagelist(content=${message.content})}">Send</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
