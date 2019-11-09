@@ -1,4 +1,4 @@
-package com.example.rabbitvhost.adapter;
+package com.example.rabbitvhost.backend.adapter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,39 +15,36 @@ import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
 
 @Profile("LISTENERMETHODS")
 @Component
-public class BackendAdapterMethodAnno {
+public class ServiceOneAdapterMethodAnno {
   private static Logger log = LogManager.getLogger();
-
-  private static int count = 0;
-  private static int countNested = 0;
 
   @Autowired
   private RabbitTemplate rabbit;
   @Autowired
   private String vHostBackend;
 
-  @RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
-      queuesToDeclare = @Queue(admins = "backendAdmin", durable = "false",
-          value = "q.backend.query"))
-  public String handleBackendQuery(final Message query) {
-    log.debug("received {}", query);
-
-    final String nestedReply = nestedSendAndReceive();
-
-    log.debug("received nested reply: {}", nestedReply);
-
-    return "reply no. " + count++ + " to " + new String(query.getBody());
-  }
-
+  private static int countNested = 0;
 
   @RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
       queuesToDeclare = @Queue(admins = "backendAdmin", durable = "false",
           value = "q.backend.nested"))
   public String handleNestedSendAndReceive(final Message nested) {
     log.debug("received nested query: {}", nested);
+
+    final String nestedReply2 = nestedSendAndReceive();
+
+    log.debug("received nested-2 reply: {}", nestedReply2);
+
     return "nested reply no. " + countNested++ + " to " + new String(nested.getBody());
   }
 
+  @RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
+      queuesToDeclare = @Queue(admins = "backendAdmin", durable = "false",
+          value = "q.backend.nested2"))
+  public String handleNestedSendAndReceive2(final Message nested) {
+    log.debug("received nested-2 query: {}", nested);
+    return "nested-2 reply no. " + countNested++ + " to " + new String(nested.getBody());
+  }
 
 
   private String nestedSendAndReceive() {
@@ -58,7 +55,7 @@ public class BackendAdapterMethodAnno {
     try {
       ArgonRoutingConnectionFactory.select(vHostBackend);
 
-      return (String) rabbit.convertSendAndReceive("", "q.backend.nested", "nested query");
+      return (String) rabbit.convertSendAndReceive("", "q.backend.nested2", "nested-2 query");
 
     } finally {
       ArgonRoutingConnectionFactory.unselect();
@@ -70,8 +67,7 @@ public class BackendAdapterMethodAnno {
   private Message createNestedReply(final String replyText) {
     final MessageProperties props =
         MessagePropertiesBuilder.newInstance().setContentType("text/plain").build();
-    final Message msg = new Message(replyText.getBytes(), props);
-    return msg;
+    return new Message(replyText.getBytes(), props);
   }
 
 

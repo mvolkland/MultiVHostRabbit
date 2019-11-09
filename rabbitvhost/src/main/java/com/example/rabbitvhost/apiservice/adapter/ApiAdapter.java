@@ -1,4 +1,4 @@
-package com.example.rabbitvhost.adapter;
+package com.example.rabbitvhost.apiservice.adapter;
 
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;

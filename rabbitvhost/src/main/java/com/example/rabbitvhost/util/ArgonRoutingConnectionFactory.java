@@ -17,8 +17,10 @@ public class ArgonRoutingConnectionFactory extends AbstractRoutingConnectionFact
     vHostConnectionFactoryMap.put(apiConnectionFactory.getVirtualHost(), apiConnectionFactory);
     vHostConnectionFactoryMap.put(backendConnectionFactory.getVirtualHost(),
         backendConnectionFactory);
-    this.setTargetConnectionFactories(vHostConnectionFactoryMap);
-    this.setDefaultTargetConnectionFactory(backendConnectionFactory);
+    setTargetConnectionFactories(vHostConnectionFactoryMap);
+    setDefaultTargetConnectionFactory(backendConnectionFactory);
+    setLenientFallback(true);
+    setDefaultTargetConnectionFactory(backendConnectionFactory);
   }
 
   public static void select(final String vhost) {

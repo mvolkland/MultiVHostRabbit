@@ -67,27 +67,6 @@ public class RabbitvhostConfiguration {
     return f;
   }
 
-  // @Bean
-  // public MessageConverter colorMessageConverter() {
-  // final WhiteListDeserializingMessageConverter mc = new WhiteListDeserializingMessageConverter()
-  // {
-  //
-  // @Override
-  // public Object fromMessage(final Message message) throws MessageConversionException {
-  // return null;
-  // }
-  //
-  // @Override
-  // protected Message createMessage(final Object object,
-  // final MessageProperties messageProperties) {
-  // return null;
-  // }
-  // };
-  //
-  // mc.addWhiteListPatterns("*.Red", "*.Green");
-  // return mc;
-  // }
-  //
   @Bean
   public RabbitAdmin apiAdmin() {
     return new RabbitAdmin(apiConnectionFactory());
