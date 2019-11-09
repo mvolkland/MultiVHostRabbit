@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
 
-@Profile({"LISTENERMETHODS & withContainerFactory"})
+@Profile({"LISTENERMETHODS & !withContainerFactory"})
 @Component
-public class ServiceOneAdapterMethodAnno {
+public class ServiceOneAdapterNoFactoryMethodAnno {
   private static Logger log = LogManager.getLogger();
 
   @Autowired
@@ -25,9 +25,7 @@ public class ServiceOneAdapterMethodAnno {
 
   private static int countNested = 0;
 
-  @RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
-      queuesToDeclare = @Queue(admins = "backendAdmin", durable = "false",
-          value = "q.backend.nested"))
+  @RabbitListener(queuesToDeclare = @Queue(durable = "false", value = "q.backend.nested"))
   public String handleNestedSendAndReceive(final Message nested) {
     log.debug("received nested query: {}", nested);
 
@@ -38,9 +36,7 @@ public class ServiceOneAdapterMethodAnno {
     return "nested reply no. " + countNested++ + " to " + new String(nested.getBody());
   }
 
-  @RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
-      queuesToDeclare = @Queue(admins = "backendAdmin", durable = "false",
-          value = "q.backend.nested2"))
+  @RabbitListener(queuesToDeclare = @Queue(durable = "false", value = "q.backend.nested2"))
   public String handleNestedSendAndReceive2(final Message nested) {
     log.debug("received nested-2 query: {}", nested);
     return "nested-2 reply no. " + countNested++ + " to " + new String(nested.getBody());

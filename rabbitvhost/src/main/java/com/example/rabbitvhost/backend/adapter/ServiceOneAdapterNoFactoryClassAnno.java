@@ -11,13 +11,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
 
-@Profile({"LISTENERCLASS & withContainerFactory"})
+@Profile({"LISTENERCLASS & !withContainerFactory"})
 @Component
-@RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
-    queuesToDeclare = {
-        @Queue(admins = "backendAdmin", durable = "false", value = "q.backend.nested"),
-        @Queue(admins = "backendAdmin", durable = "false", value = "q.backend.nested2")})
-public class ServiceOneAdapterClassAnno {
+@RabbitListener(queuesToDeclare = {@Queue(durable = "false", value = "q.backend.nested"),
+    @Queue(durable = "false", value = "q.backend.nested2")})
+public class ServiceOneAdapterNoFactoryClassAnno {
   private static Logger log = LogManager.getLogger();
 
   private static int countNested = 0;
