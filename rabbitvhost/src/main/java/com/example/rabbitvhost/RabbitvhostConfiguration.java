@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
-import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
+import com.example.rabbitvhost.util.MyRoutingConnectionFactory;
 
 @Configuration
 @ComponentScan
@@ -81,7 +81,7 @@ public class RabbitvhostConfiguration {
   @Primary
   public ConnectionFactory defaultConnectionFactory(final ConnectionFactory apiConnectionFactory,
       final ConnectionFactory backendConnectionFactory) {
-    return new ArgonRoutingConnectionFactory(apiConnectionFactory, backendConnectionFactory);
+    return new MyRoutingConnectionFactory(apiConnectionFactory, backendConnectionFactory);
   }
 
   @Bean

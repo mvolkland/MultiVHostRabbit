@@ -7,44 +7,38 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessagePropertiesBuilder;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
-import com.example.rabbitvhost.util.FixedReplyRabbitTemplate;
+import com.example.rabbitvhost.util.MyRoutingConnectionFactory;
 
 @Component
 public class ApiAdapter {
   private static Logger log = LogManager.getLogger();
 
   @Autowired
-  private final RabbitTemplate rabbit;
+  private RabbitTemplate rabbit;
   @Autowired
   private String vHostBackend;
-
-  public ApiAdapter(final ConnectionFactory connectionFactory) {
-    rabbit = new FixedReplyRabbitTemplate(connectionFactory);
-  }
 
   @RabbitListener(admin = "apiAdmin", containerFactory = "apiContainerFactory",
       queuesToDeclare = @Queue(admins = "apiAdmin", durable = "false", value = "q.api.query"))
   public String handleApiQuery(final Message query) throws Exception {
-    Message answer = new Message("empty answer".getBytes(), null);
+    Message reply = new Message("empty reply".getBytes(), null);
     final String queryText = new String(query.getBody());
     log.debug("======> {}", query);
 
     final Message backendQuery = createBackendQuery(queryText);
 
     try {
-      ArgonRoutingConnectionFactory.select(vHostBackend);
-      answer = rabbit.sendAndReceive("q.backend.query", backendQuery);
+      MyRoutingConnectionFactory.select(vHostBackend);
+      reply = rabbit.sendAndReceive("q.backend.query", backendQuery);
     } finally {
-      ArgonRoutingConnectionFactory.unselect();
+      MyRoutingConnectionFactory.unselect();
     }
 
-    log.debug("<====== answer: {}", answer);
-    return answer.toString();
+    log.debug("<====== reply: {}", reply);
+    return reply.toString();
   }
 
   private Message createBackendQuery(final String queryText) {

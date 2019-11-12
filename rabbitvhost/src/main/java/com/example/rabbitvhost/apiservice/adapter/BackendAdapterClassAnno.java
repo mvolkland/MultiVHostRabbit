@@ -8,11 +8,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
+import com.example.rabbitvhost.util.MyRoutingConnectionFactory;
 
-@Profile("LISTENERCLASS")
 @Component
 @RabbitListener(admin = "backendAdmin", containerFactory = "backendContainerFactory",
     queuesToDeclare = {
@@ -44,12 +42,12 @@ public class BackendAdapterClassAnno {
     log.debug("L1: sending nested query (Integer) {}", rand);
 
     try {
-      ArgonRoutingConnectionFactory.select(vHostBackend);
+      MyRoutingConnectionFactory.select(vHostBackend);
 
       return (String) rabbit.convertSendAndReceive("", "q.backend.nested", rand);
 
     } finally {
-      ArgonRoutingConnectionFactory.unselect();
+      MyRoutingConnectionFactory.unselect();
     }
   }
 

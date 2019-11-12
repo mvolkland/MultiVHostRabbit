@@ -6,12 +6,12 @@ import org.springframework.amqp.rabbit.connection.AbstractRoutingConnectionFacto
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.connection.SimpleResourceHolder;
 
-public class ArgonRoutingConnectionFactory extends AbstractRoutingConnectionFactory {
+public class MyRoutingConnectionFactory extends AbstractRoutingConnectionFactory {
 
-  private static final String LOOKUPKEY = "argonRCF";
+  private static final String LOOKUPKEY = "myRCF";
 
 
-  public ArgonRoutingConnectionFactory(final ConnectionFactory apiConnectionFactory,
+  public MyRoutingConnectionFactory(final ConnectionFactory apiConnectionFactory,
       final ConnectionFactory backendConnectionFactory) {
     final Map<Object, ConnectionFactory> vHostConnectionFactoryMap = new HashMap<>();
     vHostConnectionFactoryMap.put(apiConnectionFactory.getVirtualHost(), apiConnectionFactory);

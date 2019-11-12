@@ -9,9 +9,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import com.example.rabbitvhost.util.ArgonRoutingConnectionFactory;
+import com.example.rabbitvhost.util.MyRoutingConnectionFactory;
 
-@Profile({"LISTENERCLASS & !withContainerFactory"})
+@Profile({"!withContainerFactory"})
 @Component
 @RabbitListener(queuesToDeclare = {@Queue(durable = "false", value = "q.backend.nested"),
     @Queue(durable = "false", value = "q.backend.nested2")})
@@ -45,12 +45,12 @@ public class ServiceOneAdapterNoFactoryClassAnno {
     final Double rand = Double.valueOf(Math.random());
     log.debug("L2: sending nested query (Double) {}", rand);
     try {
-      ArgonRoutingConnectionFactory.select(vHostBackend);
+      MyRoutingConnectionFactory.select(vHostBackend);
 
       return (String) rabbit.convertSendAndReceive("", "q.backend.nested2", rand);
 
     } finally {
-      ArgonRoutingConnectionFactory.unselect();
+      MyRoutingConnectionFactory.unselect();
     }
   }
 
